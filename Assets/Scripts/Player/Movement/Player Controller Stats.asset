@@ -1,0 +1,52 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e9ee24a5450215af7a7e37de591e6221, type: 3}
+  m_Name: Player Controller Stats
+  m_EditorClassIdentifier: Assembly-CSharp::Player.PlayerControllerStats
+  moveThreeshold: 0.25
+  maxWalkSpeed: 12.5
+  groundAcceleration: 5
+  groundDeceleration: 20
+  airAcceleration: 5
+  airDeceleration: 5
+  maxRunSpeed: 20
+  jumpHeight: 6.5
+  jumpHeightCompensationFactor: 1.054
+  timeTillJumpApex: 0.35
+  gravityOnReleaseMultiplier: 2
+  maxFallSpeed: 26
+  maxRiseSpeed: 50
+  numberOfJumpsAllowed: 1
+  timeForUpwardsCancel: 0.027
+  apexThreshold: 0.97
+  apexHangTime: 0.075
+  jumpBufferTime: 0.125
+  jumpCoyoteTime: 0.1
+  showWalkJumpArc: 0
+  showRunJumpArc: 0
+  stopOnCollision: 1
+  drawRight: 1
+  arcResolution: 20
+  visualizationSteps: 90
+  dashTime: 0.11
+  dashSpeed: 40
+  timeBtwDashesOnGround: 0.225
+  numberOfDashes: 0
+  dashDiagonallyBias: 0.4
+  dashGravityOnReleaseMultiplier: 1
+  dashTimeForUpwardsCancel: 0.2
+  groundLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  GroundDetectionRayLength: 0.02
+  HeadDetectionRayLength: 0.02
+  HeadWidth: 0.75

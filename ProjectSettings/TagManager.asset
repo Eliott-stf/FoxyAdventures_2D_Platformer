@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 3
+  tags: []
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - Ground
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Background
+    uniqueID: 1407272999
+    locked: 0
+  - name: Herbs
+    uniqueID: 1955859965
+    locked: 0
+  - name: Mountain
+    uniqueID: 2100141795
+    locked: 0
+  - name: Montain 2
+    uniqueID: 3666583699
+    locked: 0
+  - name: Roc
+    uniqueID: 3167792059
+    locked: 0
+  - name: Bush
+    uniqueID: 2733092747
+    locked: 0
+  - name: Bush 2
+    uniqueID: 2437853675
+    locked: 0
+  - name: Ground
+    uniqueID: 4289844483
+    locked: 0
+  - name: Player
+    uniqueID: 4071837607
+    locked: 0
+  - name: Bush 3
+    uniqueID: 3569681453
+    locked: 0
+  - name: First plan
+    uniqueID: 2825877309
+    locked: 0
+  m_RenderingLayers:
+  - Default
