@@ -14,6 +14,7 @@ namespace Collectibles.Keys
         [SerializeField] private KeyType keyType;
         [SerializeField] private SpriteRenderer doorSpriteRenderer;
         [SerializeField] private Animator doorAnimator;
+        [SerializeField] private DoorEntrance doorEntrance;
 
         protected override void OnCollected(GameObject player)
         {
@@ -22,6 +23,8 @@ namespace Collectibles.Keys
                 case KeyType.ChangeColor:
                     if (doorSpriteRenderer != null)
                         doorSpriteRenderer.color = Color.black;
+                    if (doorEntrance != null)
+                        doorEntrance.Unlock(); 
                     break;
 
                 case KeyType.TriggerAnimation:

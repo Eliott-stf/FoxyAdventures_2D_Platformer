@@ -15,8 +15,11 @@ EditorBuildSettings:
     path: Assets/_Recovery/Menu.unity
     guid: f2c51c1c12f6a6959a0fe1315dc72b45
   - enabled: 1
-    path: Assets/_Recovery/LevelDay.unity
+    path: Assets/_Recovery/Cave.unity
     guid: e533cb24e28627b0f82daac1af5b4426
+  - enabled: 1
+    path: Assets/_Recovery/LevelDay.unity
+    guid: ae68691482d75461c843ee242f90e1a1
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 2bcd2660ca9b64942af0de543d8d7100, type: 3}
   m_UseUCBPForAssetBundles: 0

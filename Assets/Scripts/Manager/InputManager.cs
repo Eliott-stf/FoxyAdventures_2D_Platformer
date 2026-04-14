@@ -21,12 +21,14 @@ namespace Manager
         public static bool DashWasPressed;
         
         public static bool MenuWasPressed;
+        public static bool InteractWasPressed;
 
         private InputAction _moveAction;
         private InputAction _jumpAction;
         private InputAction _runAction;
         private InputAction _dashAction;
         private InputAction _menuAction;
+        private InputAction _interactAction;
 
         private void Awake()
         {
@@ -38,6 +40,7 @@ namespace Manager
             _runAction = PlayerInput.actions["Run"];
             _dashAction = PlayerInput.actions["Dash"];
             _menuAction = PlayerInput.actions["Menu"];
+            _interactAction = PlayerInput.actions["Interact"];
         }
 
         // Update is called once per frame
@@ -54,6 +57,8 @@ namespace Manager
             DashWasPressed = _dashAction.WasPressedThisFrame();
             
             MenuWasPressed = _menuAction.WasPressedThisFrame();
+
+            InteractWasPressed = _interactAction.WasPressedThisFrame();
         }
     }
 }
