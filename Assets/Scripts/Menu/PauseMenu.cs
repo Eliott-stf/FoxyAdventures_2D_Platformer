@@ -9,7 +9,6 @@ namespace Menu
         public GameObject pauseMenu;
         public GameObject tuto;
         public GameObject lifeDisplay;
-        public GameObject achivements;
         
         private bool hudVisible = true;
         
@@ -44,7 +43,6 @@ namespace Menu
             
             tuto.SetActive(hudVisible);
             lifeDisplay.SetActive(hudVisible);
-            achivements.SetActive(hudVisible);
             
             noHudButtonText.text = hudVisible ? "Disable HUD" : "Enable HUD";
         }
