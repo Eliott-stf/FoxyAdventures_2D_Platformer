@@ -7,12 +7,13 @@ public class DoorEntrance : MonoBehaviour
     public string sceneName = "Cave";
     private bool playerInRange = false;
     private bool isUnlocked = false;
+    public GameObject interactPrompt;
 
     void Update()
     {
         if (playerInRange && isUnlocked && InputManager.InteractWasPressed)
         {
-            SceneManager.LoadScene(sceneName);
+            TransitionManager.Instance.LoadScene(sceneName, "fade");
         }
     }
     //quand on ramasse la clé
@@ -26,6 +27,8 @@ public class DoorEntrance : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = true;
+            if (isUnlocked)
+                interactPrompt.SetActive(true);
         }
     }
 
@@ -34,6 +37,7 @@ public class DoorEntrance : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             playerInRange = false;
+            interactPrompt.SetActive(false);
         }
     }
 }

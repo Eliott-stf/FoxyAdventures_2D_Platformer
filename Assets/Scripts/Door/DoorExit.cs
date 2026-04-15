@@ -5,12 +5,13 @@ public class DoorExit : MonoBehaviour
 {
     public string sceneName = "LevelDay";
     private bool playerInRange = false;
+    public GameObject interactPrompt;
 
     void Update()
     {
         if (playerInRange && InputManager.InteractWasPressed)
         {
-            SceneManager.LoadScene(sceneName);
+            TransitionManager.Instance.LoadScene(sceneName, "fade");
         }
     }
 
@@ -18,11 +19,14 @@ public class DoorExit : MonoBehaviour
     {
         if (other.CompareTag("Player"))
             playerInRange = true;
+        interactPrompt.SetActive(true);
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
             playerInRange = false;
+        interactPrompt.SetActive(false);
+        
     }
 }
