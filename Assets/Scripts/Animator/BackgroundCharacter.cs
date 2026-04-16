@@ -1,9 +1,11 @@
 using Player;
+using Unity.Cinemachine;
+
 
 namespace Animator
 {
     using UnityEngine;
-    using Menu; // Requis pour communiquer avec le menu
+    using Menu; 
 
     public class BackgroundCharacter : MonoBehaviour
     {
@@ -24,6 +26,10 @@ namespace Animator
         public GameObject tuto;
         public GameObject lifeDisplay;
         public GameObject achivements;
+        
+        [Header("Cinemachine")]
+        public BoxCollider2D confiner;
+        public CinemachineCamera virtualCamera;
         
         private enum State
         {
@@ -92,6 +98,10 @@ namespace Animator
                         tuto.SetActive(true);
                         lifeDisplay.SetActive(true);
                         achivements.SetActive(true);
+                        
+                        confiner.offset = new Vector2(39.963f, 14.736f);
+                        confiner.size = new Vector2(130.181f, 35.425f);
+                        virtualCamera.GetComponent<CinemachineConfiner2D>().InvalidateBoundingShapeCache();
                     }
                     break;
             }
