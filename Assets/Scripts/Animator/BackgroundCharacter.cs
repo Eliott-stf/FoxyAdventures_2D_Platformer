@@ -1,11 +1,10 @@
 using Player;
 using Unity.Cinemachine;
 
-
 namespace Animator
 {
     using UnityEngine;
-    using Menu; 
+    using Menu;
 
     public class BackgroundCharacter : MonoBehaviour
     {
@@ -13,7 +12,8 @@ namespace Animator
         private ParticleSystem dustParticle;
 
         [Header("Mouvement")]
-        public float runSpeed = 10f;
+        public float runSpeedIn = 10f;   // vitesse A -> Pause
+        public float runSpeedOut = 15f;  // vitesse Pause -> B
         public float startX = 1.3f;
         public float stopX = 35f;
         public float exitX = 70.5f;
@@ -25,20 +25,12 @@ namespace Animator
         [Header("HUD")]
         public GameObject tuto;
         public GameObject lifeDisplay;
-        public GameObject achivements;
-        
+
         [Header("Cinemachine")]
         public BoxCollider2D confiner;
         public CinemachineCamera virtualCamera;
-        
-        private enum State
-        {
-            RunningIn,
-            Waiting,
-            RunningOut,
-            Finished
-        }
 
+        private enum State { RunningIn, Waiting, RunningOut, Finished }
         private State state = State.RunningIn;
 
         void Start()
@@ -48,9 +40,7 @@ namespace Animator
             transform.position = new Vector2(startX, transform.position.y);
 
             if (playerController != null)
-            {
                 playerController.enabled = false;
-            }
         }
 
         void Update()
@@ -58,7 +48,7 @@ namespace Animator
             switch (state)
             {
                 case State.RunningIn:
-                    transform.Translate(Vector2.right * runSpeed * Time.deltaTime);
+                    transform.Translate(Vector2.right * runSpeedIn * Time.deltaTime);
                     animator.SetBool("isRunning", true);
                     if (!dustParticle.isPlaying) dustParticle.Play();
 
@@ -69,11 +59,8 @@ namespace Animator
                         animator.SetBool("isRunning", false);
                         dustParticle.Stop();
 
-                        // Déclenche l'apparition du menu
                         if (mainMenu != null)
-                        {
                             mainMenu.ShowMenu();
-                        }
                     }
                     break;
 
@@ -81,24 +68,22 @@ namespace Animator
                     break;
 
                 case State.RunningOut:
-                    transform.Translate(Vector2.right * runSpeed * Time.deltaTime);
+                    transform.Translate(Vector2.right * runSpeedOut * Time.deltaTime);
                     animator.SetBool("isRunning", true);
                     if (!dustParticle.isPlaying) dustParticle.Play();
 
                     if (transform.position.x >= exitX)
                     {
                         if (playerController != null)
-                        {
                             playerController.enabled = true;
-                        }
+
                         state = State.Finished;
                         animator.SetBool("isRunning", false);
                         dustParticle.Stop();
-                        
-                        tuto.SetActive(true);
-                        lifeDisplay.SetActive(true);
-                        achivements.SetActive(true);
-                        
+
+                        tuto.GetComponent<HUDFade>().Show();
+                        lifeDisplay.GetComponent<HUDFade>().Show();
+
                         confiner.offset = new Vector2(39.963f, 14.736f);
                         confiner.size = new Vector2(130.181f, 35.425f);
                         virtualCamera.GetComponent<CinemachineConfiner2D>().InvalidateBoundingShapeCache();
@@ -107,7 +92,6 @@ namespace Animator
             }
         }
 
-        // Méthode appelée par le script du menu
         public void TriggerExitAnimation()
         {
             state = State.RunningOut;
