@@ -10,24 +10,26 @@ namespace Manager
     {
         public static TransitionManager Instance;
 
+        // temps de l'animation
         [SerializeField] private float duration = 0.5f;
-        private RectTransform overlay;
-        private Dictionary<string, System.Func<bool, IEnumerator>> transitions;
+        //UI de l'overlay
+        private RectTransform _overlay;
+        //Stock le mot clée a une méthode 
+        private Dictionary<string, System.Func<bool, IEnumerator>> _transitions;
 
+        //on execute la méthode avant meme la 1er frame
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
         static void SpawnTransitionManager()
         {
+            //On va chercher le prefab "TM" dans le dossier Ressources pour l'instancier dynamiquement
             var prefab = Resources.Load<GameObject>("TransitionManager");
-            if (prefab == null)
-            {
-                Debug.LogError("Prefab 'TransitionManager' introuvable dans Resources !");
-                return;
-            }
+            if (prefab is null) return;
             Instantiate(prefab);
         }
 
         void Awake()
         {
+            //S'il existe déjà, on le supp
             if (Instance != null)
             {
                 Destroy(gameObject);
@@ -35,26 +37,24 @@ namespace Manager
             }
 
             Instance = this;
+            //on le detruit pas si ya un changement de scene 
             DontDestroyOnLoad(gameObject);
 
-            // Trouve l'overlay automatiquement
-            overlay = transform.Find("../Overlay")?.GetComponent<RectTransform>()
+            // Trouve l'overlay automatiquement dans la scene (Qui est instancier en mm tps que TM)
+            _overlay = transform.Find("../Overlay")?.GetComponent<RectTransform>()
                       ?? GameObject.Find("Overlay")?.GetComponent<RectTransform>();
 
-            if (overlay == null)
-            {
-                Debug.LogError("Overlay introuvable ! Vérifie que ton Image noire s'appelle 'Overlay'.");
-                return;
-            }
+            if (_overlay is null) return;
 
-            DontDestroyOnLoad(overlay.transform.root.gameObject);
-            overlay.anchoredPosition = new Vector2(0, Screen.height);
+            DontDestroyOnLoad(_overlay.transform.root.gameObject);
+            _overlay.anchoredPosition = new Vector2(0, Screen.height);
             RegisterTransitions();
         }
 
+        //Méthode pour associer les mots-clés à leurs méthodes
         void RegisterTransitions()
         {
-            transitions = new Dictionary<string, System.Func<bool, IEnumerator>>
+            _transitions = new Dictionary<string, System.Func<bool, IEnumerator>>
             {
                 { "curtain", (isIn) => PlayCurtain(isIn) },
                 { "fade",    (isIn) => PlayFade(isIn)    },
@@ -62,6 +62,7 @@ namespace Manager
             };
         }
 
+        //Méthode appellée par les portes pour lancer une coroutine 
         public void LoadScene(string sceneName, string transitionName = "curtain")
         {
             StartCoroutine(RunTransition(sceneName, transitionName));
@@ -69,24 +70,31 @@ namespace Manager
 
         IEnumerator RunTransition(string sceneName, string transitionName)
         {
-            if (!transitions.ContainsKey(transitionName))
+            //Transi est "curtaint" par defaut si rien trouvé 
+            if (!_transitions.ContainsKey(transitionName))
             {
-                Debug.LogWarning($"Transition '{transitionName}' introuvable, fallback sur curtain.");
                 transitionName = "curtain";
             }
-
-            yield return StartCoroutine(transitions[transitionName](true));
+    
+            //start l'animation d'entrée
+            yield return StartCoroutine(_transitions[transitionName](true));
+            //On lance la nouvelle scene
             yield return SceneManager.LoadSceneAsync(sceneName);
-            yield return StartCoroutine(transitions[transitionName](false));
+            //Start l'anim de sortie
+            yield return StartCoroutine(_transitions[transitionName](false));
         }
+        
+        /**
+         * Méthode d'aniamtions pour les transitions
+         */
 
         IEnumerator PlayCurtain(bool isIn)
         {
             float from = isIn ? Screen.height : 0;
             float to   = isIn ? 0 : -Screen.height;
 
-            overlay.anchoredPosition = new Vector2(0, from);
-            yield return overlay
+            _overlay.anchoredPosition = new Vector2(0, from);
+            yield return _overlay
                 .DOAnchorPosY(to, duration)
                 .SetEase(Ease.InOutQuad)
                 .WaitForCompletion();
@@ -94,11 +102,11 @@ namespace Manager
 
         IEnumerator PlayFade(bool isIn)
         {
-            var img = overlay.GetComponent<UnityEngine.UI.Image>();
+            var img = _overlay.GetComponent<UnityEngine.UI.Image>();
             float from = isIn ? 0f : 1f;
             float to   = isIn ? 1f : 0f;
 
-            overlay.anchoredPosition = Vector2.zero;
+            _overlay.anchoredPosition = Vector2.zero;
             img.color = new Color(0, 0, 0, from);
             yield return img
                 .DOFade(to, duration)
@@ -107,8 +115,8 @@ namespace Manager
 
         IEnumerator PlayFlash(bool isIn)
         {
-            var img = overlay.GetComponent<UnityEngine.UI.Image>();
-            overlay.anchoredPosition = Vector2.zero;
+            var img = _overlay.GetComponent<UnityEngine.UI.Image>();
+            _overlay.anchoredPosition = Vector2.zero;
             img.color = new Color(0, 0, 0, 1f);
 
             yield return new WaitForSeconds(isIn ? 0f : 0.1f);
@@ -116,7 +124,7 @@ namespace Manager
             if (!isIn)
             {
                 yield return img.DOFade(0f, duration).WaitForCompletion();
-                overlay.anchoredPosition = new Vector2(0, Screen.height);
+                _overlay.anchoredPosition = new Vector2(0, Screen.height);
             }
         }
     }

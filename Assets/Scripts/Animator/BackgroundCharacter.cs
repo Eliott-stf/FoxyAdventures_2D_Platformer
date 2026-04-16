@@ -8,12 +8,15 @@ namespace Animator
 
     public class BackgroundCharacter : MonoBehaviour
     {
-        private UnityEngine.Animator animator;
-        private ParticleSystem dustParticle;
+        private Animator _animator;
+        private ParticleSystem _dustParticle;
 
         [Header("Mouvement")]
-        public float runSpeedIn = 10f;   // vitesse A -> Pause
-        public float runSpeedOut = 15f;  // vitesse Pause -> B
+        // vitesse A -> Pause
+        public float runSpeedIn = 10f;  
+        // vitesse Pause -> B
+        public float runSpeedOut = 15f;  
+        // Coord A, Pause, B 
         public float startX = 1.3f;
         public float stopX = 35f;
         public float exitX = 70.5f;
@@ -29,72 +32,103 @@ namespace Animator
         [Header("Cinemachine")]
         public BoxCollider2D confiner;
         public CinemachineCamera virtualCamera;
-
+        
+        [Header("Bounds")]
+        public BoxCollider2D bounds;
+        
+        //propriètes pour stocker les component 
+        private HUDFade _tutoFade;
+        private HUDFade _lifeDisplayFade;
+        private CinemachineConfiner2D _cameraConfiner;
+        
+        //enum définit la liste des statut de l'anim global
         private enum State { RunningIn, Waiting, RunningOut, Finished }
-        private State state = State.RunningIn;
+        //L'etat unitial du perso 
+        private State _state = State.RunningIn;
 
         void Start()
         {
-            animator = GetComponentInChildren<UnityEngine.Animator>();
-            dustParticle = GetComponentInChildren<ParticleSystem>();
+            //on récupère tout nos composant 
+            _animator = GetComponentInChildren<Animator>();
+            _dustParticle = GetComponentInChildren<ParticleSystem>();
+            _tutoFade = tuto.GetComponent<HUDFade>();
+            _lifeDisplayFade = lifeDisplay.GetComponent<HUDFade>();
+            _cameraConfiner = virtualCamera.GetComponent<CinemachineConfiner2D>();
+            
+            //On place le joueur au point A 
             transform.position = new Vector2(startX, transform.position.y);
 
+            //On désac les controls
             if (playerController != null)
                 playerController.enabled = false;
         }
 
         void Update()
         {
-            switch (state)
+            switch (_state)
             {
+                //Debut de l'anim
                 case State.RunningIn:
-                    transform.Translate(Vector2.right * runSpeedIn * Time.deltaTime);
-                    animator.SetBool("isRunning", true);
-                    if (!dustParticle.isPlaying) dustParticle.Play();
+                    //On lui donne sa vitesse 
+                    transform.Translate(Vector2.right * (runSpeedIn * Time.deltaTime));
+                    //On set son animation pour courir
+                    _animator.SetBool("isRunning", true);
+                    //On active la particule 
+                    if (!_dustParticle.isPlaying) _dustParticle.Play();
 
+                    //On vérifie qu'il est bien arrivée au point Pause
                     if (transform.position.x >= stopX)
                     {
+                        //On fixe sa position
                         transform.position = new Vector2(stopX, transform.position.y);
-                        state = State.Waiting;
-                        animator.SetBool("isRunning", false);
-                        dustParticle.Stop();
-
-                        if (mainMenu != null)
-                            mainMenu.ShowMenu();
+                        //On passe au state suivant
+                        _state = State.Waiting;
+                        //On reset son animation de course et la particule
+                        _animator.SetBool("isRunning", false);
+                        _dustParticle.Stop();
+                        //On affiche le Menu du jeu
+                        mainMenu?.ShowMenu();
                     }
                     break;
-
+                //Pdt la pause, on fait rien
                 case State.Waiting:
                     break;
-
+                //La fin
                 case State.RunningOut:
-                    transform.Translate(Vector2.right * runSpeedOut * Time.deltaTime);
-                    animator.SetBool("isRunning", true);
-                    if (!dustParticle.isPlaying) dustParticle.Play();
+                    //On lui set sa vitesse,anim,particule..
+                    transform.Translate(Vector2.right * (runSpeedOut * Time.deltaTime));
+                    _animator.SetBool("isRunning", true);
+                    if (!_dustParticle.isPlaying) _dustParticle.Play();
 
+                    //On vérifie qu'il est bien arrivée au point B
                     if (transform.position.x >= exitX)
                     {
-                        if (playerController != null)
+                        //On redonne les controls au joueur
+                        if (playerController is not null)
                             playerController.enabled = true;
 
-                        state = State.Finished;
-                        animator.SetBool("isRunning", false);
-                        dustParticle.Stop();
+                        //On change de state, l'anim et la particule...
+                        _state = State.Finished;
+                        _animator.SetBool("isRunning", false);
+                        _dustParticle.Stop();
 
-                        tuto.GetComponent<HUDFade>().Show();
-                        lifeDisplay.GetComponent<HUDFade>().Show();
+                        //On affiche le HUD avec la méthode Show() de HUDFade pour un effet fondu
+                        _tutoFade.Show();
+                        _lifeDisplayFade.Show();
 
+                        //Pour pas retourner au Menu, On bloque la camera ET on active le wall invisible 
                         confiner.offset = new Vector2(39.963f, 14.736f);
                         confiner.size = new Vector2(130.181f, 35.425f);
-                        virtualCamera.GetComponent<CinemachineConfiner2D>().InvalidateBoundingShapeCache();
+                        _cameraConfiner.InvalidateBoundingShapeCache();
+                        bounds.isTrigger = false;
                     }
                     break;
             }
         }
-
+        
         public void TriggerExitAnimation()
         {
-            state = State.RunningOut;
+            _state = State.RunningOut;
         }
     }
 }

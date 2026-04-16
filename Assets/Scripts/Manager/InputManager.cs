@@ -34,7 +34,8 @@ namespace Manager
         {
             //On récupère le component 
             PlayerInput = GetComponent<PlayerInput>();
-
+            
+            //On set nos controls 
             _moveAction = PlayerInput.actions["Move"];
             _jumpAction = PlayerInput.actions["Jump"];
             _runAction = PlayerInput.actions["Run"];
@@ -46,6 +47,7 @@ namespace Manager
         // Update is called once per frame
         void Update()
         {
+            //on set pour nos inputs
             Movement = _moveAction.ReadValue<Vector2>();
 
             JumpWasPressed = _jumpAction.WasPressedThisFrame();

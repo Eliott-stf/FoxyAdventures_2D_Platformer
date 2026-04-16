@@ -1,6 +1,5 @@
 namespace Enemies
 {
-
     using Player.Health;
     using UnityEngine;
 

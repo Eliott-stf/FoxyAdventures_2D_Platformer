@@ -1,43 +1,47 @@
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using Manager;
-
-public class DoorEntrance : MonoBehaviour
+namespace Door
 {
-    public string sceneName = "Cave";
-    private bool playerInRange = false;
-    private bool isUnlocked = false;
-    public GameObject interactPrompt;
+    using UnityEngine;
+    using Manager;
 
-    void Update()
+    public class DoorEntrance : MonoBehaviour
     {
-        if (playerInRange && isUnlocked && InputManager.InteractWasPressed)
+        public string sceneName = "Cave";
+        private bool _playerInRange = false;
+        private bool isUnlocked = false;
+        public GameObject interactPrompt;
+
+        void Update()
         {
-            TransitionManager.Instance.LoadScene(sceneName, "fade");
+            //Si la porte est deverouillée, on load la scene
+            if (_playerInRange && isUnlocked && InputManager.InteractWasPressed)
+            {
+                TransitionManager.Instance.LoadScene(sceneName, "fade");
+            }
         }
-    }
-    //quand on ramasse la clé
-    public void Unlock()
-    {
-        isUnlocked = true;
-    }
 
-    void OnTriggerEnter2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
+        //méthode appellée quand on ramasse la clée (key;cs)
+        public void Unlock()
         {
-            playerInRange = true;
-            if (isUnlocked)
-                interactPrompt.SetActive(true);
+            isUnlocked = true;
         }
-    }
 
-    void OnTriggerExit2D(Collider2D other)
-    {
-        if (other.CompareTag("Player"))
+        void OnTriggerEnter2D(Collider2D other)
         {
-            playerInRange = false;
-            interactPrompt.SetActive(false);
+            if (other.CompareTag("Player"))
+            {
+                _playerInRange = true;
+                if (isUnlocked)
+                    interactPrompt.SetActive(true);
+            }
+        }
+
+        void OnTriggerExit2D(Collider2D other)
+        {
+            if (other.CompareTag("Player"))
+            {
+                _playerInRange = false;
+                interactPrompt.SetActive(false);
+            }
         }
     }
 }

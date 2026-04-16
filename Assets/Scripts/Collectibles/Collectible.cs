@@ -9,6 +9,7 @@ namespace Collectibles
         
         void Update()
         {
+            //On fait tourner l'item
             transform.Rotate(rotationAxis * rotationSpeed);
         }
 
@@ -22,6 +23,7 @@ namespace Collectibles
             }
         }
 
+        //méthode vide pour l'override
         protected abstract void OnCollected(GameObject player);
     }
 }

@@ -1,3 +1,5 @@
+using Door;
+
 namespace Collectibles.Keys
 {
     using Collectibles;
@@ -20,6 +22,7 @@ namespace Collectibles.Keys
         {
             switch (keyType)
             {
+                //cas1: Ma clée qui fait changer de couleur la porte + la deverouille
                 case KeyType.ChangeColor:
                     if (doorSpriteRenderer != null)
                         doorSpriteRenderer.color = Color.black;
@@ -27,15 +30,18 @@ namespace Collectibles.Keys
                         doorEntrance.Unlock(); 
                     break;
 
+                //cas2: Ma clée qui fait lance l'animation de la porte
                 case KeyType.TriggerAnimation:
                     if (doorAnimator != null)
                         doorAnimator.SetTrigger("Open");
+                    
+                    //On retire le collider
                         BoxCollider2D doorCollider = doorAnimator.GetComponent<BoxCollider2D>();
                     if (doorCollider != null)
                         Destroy(doorCollider);
                     break;
             }
-
+            //On supprime la clée
             Destroy(gameObject);
         }
     }

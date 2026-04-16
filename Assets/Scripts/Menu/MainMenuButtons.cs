@@ -4,8 +4,7 @@ namespace Menu
     using UnityEngine;
     using UnityEngine.EventSystems;
     using TMPro;
-    using Manager;
-    using Animator; // Requis pour communiquer avec le personnage
+    using Animator; 
 
     public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
@@ -16,14 +15,14 @@ namespace Menu
         [Header("Bouton Visuel")]
         public Color normalColor = Color.white;
         public Color hoverColor = new Color(0.69f, 0.66f, 0.66f);
-        private TMP_Text tmpText;
-
+        private TMP_Text _tmpText;
+        
         [Header("Références Externes")]
         [SerializeField] private BackgroundCharacter backgroundCharacter;
 
         void Start()
         {
-            tmpText = GetComponentInChildren<TMP_Text>();
+            _tmpText = GetComponentInChildren<TMP_Text>();
             
             if (menuCanvasGroup != null)
             {
@@ -33,12 +32,12 @@ namespace Menu
 
         public void OnPointerEnter(PointerEventData eventData)
         {
-            if (tmpText != null) tmpText.color = hoverColor;
+            if (_tmpText != null) _tmpText.color = hoverColor;
         }
 
         public void OnPointerExit(PointerEventData eventData)
         {
-            if (tmpText != null) tmpText.color = normalColor;
+            if (_tmpText != null) _tmpText.color = normalColor;
         }
 
         // Méthode appelée par le BackgroundCharacter quand il s'arrête
@@ -47,11 +46,13 @@ namespace Menu
             StartCoroutine(FadeMenu(0f, 1f));
         }
 
+        //Méthode du bouton PLay
         public void PlayGame()
         {
             StartCoroutine(StartGameSequence());
         }
 
+        //Méthode du bouton Quit
         public void QuitGame()
         {
             Application.Quit();
@@ -59,25 +60,27 @@ namespace Menu
 
         private IEnumerator StartGameSequence()
         {
-            // 1. Disparition du menu
+            // disparition du menu
             yield return StartCoroutine(FadeMenu(1f, 0f));
             menuCanvasGroup.gameObject.SetActive(false);
 
-            // 2. Déclenchement de la course du personnage
-            if (backgroundCharacter != null)
-            {
-                backgroundCharacter.TriggerExitAnimation();
-            }
+            // Déclenchement de l'aanimation de course du personnage
+            backgroundCharacter?.TriggerExitAnimation();
         }
 
+        //Coroutine pour faire un effet 'Fondu' au noir en jouant sur le alpha de CanvasGroup de A a B
         private IEnumerator FadeMenu(float from, float to)
         {
+            //compteur de temps
             float elapsed = 0f;
+            
+            //Applique la transparence
             menuCanvasGroup.alpha = from;
-
+            
             while (elapsed < fadeDuration)
             {
                 elapsed += Time.deltaTime;
+                
                 menuCanvasGroup.alpha = Mathf.Lerp(from, to, elapsed / fadeDuration);
                 yield return null;
             }

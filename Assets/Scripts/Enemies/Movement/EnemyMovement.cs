@@ -1,49 +1,58 @@
-using UnityEngine;
-
-public class EnemyMovement : MonoBehaviour
+namespace Enemies.Movement
 {
-    [SerializeField] private float speed = 3f;
-    public GameObject pointA;
-    public GameObject pointB;
+    using UnityEngine;
 
-    private Rigidbody2D rb;
-    private Transform currentTarget;
-
-    void Start()
+    public class EnemyMovement : MonoBehaviour
     {
-        rb = GetComponent<Rigidbody2D>();
-        currentTarget = pointB.transform;
-    }
+        //sa vitesse de marche
+        [SerializeField] private float speed = 3f;
+        //Sa patrouille
+        public GameObject pointA;
+        public GameObject pointB;
 
-    void Update()
-    {
-        if (Vector2.Distance(transform.position, currentTarget.position) < 0.5f)
+        private Rigidbody2D _rb;
+        //propriete pour set le point ou il doit se diriger 
+        private Transform _currentTarget;
+
+        void Start()
         {
-            // Basculer la cible
-            currentTarget = (currentTarget == pointB.transform) 
-                ? pointA.transform 
-                : pointB.transform;
-
-            Flip();
+            //Récup les component/valeur
+            _rb = GetComponent<Rigidbody2D>();
+            _currentTarget = pointB.transform;
         }
 
-        // ON applique le mouvement vers la nouvelle cible
-        float direction = (currentTarget.position.x > transform.position.x) ? 1f : -1f;
-        rb.linearVelocity = new Vector2(direction * speed, rb.linearVelocity.y);
-    }
-    
+        void Update()
+        {
+            // On calcule la distance entre la position actuelle et la cible.
+            if (Vector2.Distance(transform.position, _currentTarget.position) < 0.5f)
+            {
+                // Basculer la cible
+                _currentTarget = (_currentTarget == pointB.transform)
+                    ? pointA.transform
+                    : pointB.transform;
 
-    private void Flip()
-    {
-        Vector3 localScale = transform.localScale;
-        localScale.x *= -1;
-        transform.localScale = localScale;
-    }
+                Flip();
+            }
 
-    public void OnDrawGizmos()
-    {
-        Gizmos.DrawWireSphere(pointA.transform.position, 0.5f);
-        Gizmos.DrawWireSphere(pointB.transform.position, 0.5f);
-        Gizmos.DrawLine(pointA.transform.position, pointB.transform.position);
+            // ON applique le mouvement vers la nouvelle cible
+            float direction = (_currentTarget.position.x > transform.position.x) ? 1f : -1f;
+            _rb.linearVelocity = new Vector2(direction * speed, _rb.linearVelocity.y);
+        }
+
+        //méthode pour retourner le perso
+        private void Flip()
+        {
+            Vector3 localScale = transform.localScale;
+            localScale.x *= -1;
+            transform.localScale = localScale;
+        }
+
+        //méthode pour dessiner graphiquement le patrol sur la scene (confortable)
+        public void OnDrawGizmos()
+        {
+            Gizmos.DrawWireSphere(pointA.transform.position, 0.5f);
+            Gizmos.DrawWireSphere(pointB.transform.position, 0.5f);
+            Gizmos.DrawLine(pointA.transform.position, pointB.transform.position);
+        }
     }
 }

@@ -26,14 +26,7 @@ namespace Player.Health
             {
                 // Active ou désactive l'objet selon le maxHealth
                 hearts[i].gameObject.SetActive(i < maxHealth);
-                if (i < health)
-                {
-                    hearts[i].sprite = fullHearth;
-                }
-                else
-                {
-                    hearts[i].sprite = emptyHearth;
-                }
+                hearts[i].sprite = i < health ? fullHearth : emptyHearth;
             }
         }
     }

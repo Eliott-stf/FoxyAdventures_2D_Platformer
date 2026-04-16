@@ -13,21 +13,25 @@ namespace Animator
         [SerializeField] private float rotationAngle = 5f;
         [SerializeField] private float rotationDuration = 1.5f;
 
-        private Vector3 initialScale;
-        private Vector3 initialRotation;
+        private Vector3 _initialScale;
+        private Vector3 _initialRotation;
 
         private void Start()
         {
-            initialScale = transform.localScale;
-            initialRotation = transform.localEulerAngles;
+            //on set les valeur d'origine
+            _initialScale = transform.localScale;
+            _initialRotation = transform.localEulerAngles;
 
-            transform.DOScale(initialScale * scaleMultiplier, scaleDuration)
+            //Anime d'agrandissement
+            transform.DOScale(_initialScale * scaleMultiplier, scaleDuration)
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetEase(Ease.InOutSine);
 
-            transform.localEulerAngles = new Vector3(initialRotation.x, initialRotation.y, initialRotation.z - rotationAngle);
+            //set de l'angle
+            transform.localEulerAngles = new Vector3(_initialRotation.x, _initialRotation.y, _initialRotation.z - rotationAngle);
 
-            transform.DOLocalRotate(new Vector3(initialRotation.x, initialRotation.y, initialRotation.z + rotationAngle), rotationDuration)
+            //Anim de rotation
+            transform.DOLocalRotate(new Vector3(_initialRotation.x, _initialRotation.y, _initialRotation.z + rotationAngle), rotationDuration)
                 .SetLoops(-1, LoopType.Yoyo)
                 .SetEase(Ease.InOutSine);
         }

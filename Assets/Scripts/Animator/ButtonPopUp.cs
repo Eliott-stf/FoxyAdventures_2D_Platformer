@@ -5,12 +5,19 @@ namespace Animator
 
     public class ButtonPopUp : MonoBehaviour
     {
-        public Vector3 targetScale = new Vector3(0.058f, 0.045f, 0.045f); // ta scale de base
+        private Vector3 _originalScale;
+
+        void Awake()
+        {
+            //on set la valeur de base
+            _originalScale = transform.localScale;
+        }
 
         void OnEnable()
         {
+            //anim 
             transform.localScale = Vector3.zero;
-            transform.DOScale(targetScale, 0.4f).SetEase(Ease.OutBack);
+            transform.DOScale(_originalScale, 0.4f).SetEase(Ease.OutBack);
         }
     }
 }
