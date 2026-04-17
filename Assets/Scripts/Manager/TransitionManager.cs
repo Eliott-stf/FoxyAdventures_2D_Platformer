@@ -16,6 +16,7 @@ namespace Manager
         private RectTransform _overlay;
         //Stock le mot clée a une méthode 
         private Dictionary<string, System.Func<bool, IEnumerator>> _transitions;
+        private UnityEngine.UI.Image _overlayImage;
 
         //on execute la méthode avant meme la 1er frame
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
@@ -45,6 +46,8 @@ namespace Manager
                       ?? GameObject.Find("Overlay")?.GetComponent<RectTransform>();
 
             if (_overlay is null) return;
+            
+            _overlayImage = _overlay.GetComponent<UnityEngine.UI.Image>();
 
             DontDestroyOnLoad(_overlay.transform.root.gameObject);
             _overlay.anchoredPosition = new Vector2(0, Screen.height);
@@ -100,30 +103,32 @@ namespace Manager
                 .WaitForCompletion();
         }
 
-        IEnumerator PlayFade(bool isIn)
+        public IEnumerator PlayFade(bool isIn, float customDuration = -1f)
         {
             var img = _overlay.GetComponent<UnityEngine.UI.Image>();
+            float d    = customDuration > 0 ? customDuration : duration;
             float from = isIn ? 0f : 1f;
             float to   = isIn ? 1f : 0f;
 
             _overlay.anchoredPosition = Vector2.zero;
             img.color = new Color(0, 0, 0, from);
-            yield return img
-                .DOFade(to, duration)
-                .WaitForCompletion();
+            yield return img.DOFade(to, d).WaitForCompletion();
+
+            // Reset overlay hors écran après fade out
+            if (!isIn)
+                _overlay.anchoredPosition = new Vector2(0, Screen.height);
         }
 
         IEnumerator PlayFlash(bool isIn)
         {
-            var img = _overlay.GetComponent<UnityEngine.UI.Image>();
             _overlay.anchoredPosition = Vector2.zero;
-            img.color = new Color(0, 0, 0, 1f);
+            _overlayImage.color = new Color(0, 0, 0, 1f);
 
             yield return new WaitForSeconds(isIn ? 0f : 0.1f);
 
             if (!isIn)
             {
-                yield return img.DOFade(0f, duration).WaitForCompletion();
+                yield return _overlayImage.DOFade(0f, duration).WaitForCompletion();
                 _overlay.anchoredPosition = new Vector2(0, Screen.height);
             }
         }

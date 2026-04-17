@@ -1,3 +1,6 @@
+using System.Collections;
+using Animator;
+using Door;
 using Manager;
 
 namespace Collectibles.Abilities
@@ -12,7 +15,13 @@ namespace Collectibles.Abilities
         [Header("Références")]
         public Animator playerAnimator;
         public PlayerController playerController;
-        public DoorEntrance door; // ta porte qui mène à LevelNight
+        public DoorExit door; 
+        public SleepZzz SleepZzz; 
+        
+        [Header("Transition")]
+        public float fadeDuration = 1f;
+        public float fadeDuration2 = 1f;
+        
         
         public TMP_Text doubleJumpText;
         protected override void OnCollected(GameObject player)
@@ -28,40 +37,46 @@ namespace Collectibles.Abilities
                 FindFirstObjectByType<AchievementManager>().Unlock("Jump");
                 // Lance la coroutine depuis le TransitionManager
                 TransitionManager.Instance.StartCoroutine(SleepSequence(pc));
+                
             }
         }
         
-        IEnumerator SleepSequence()
+        IEnumerator SleepSequence(PlayerController pc)
         {
-            // 1. Bloque les controls + lance anim sleep
+            Rigidbody2D rb = playerController.GetComponent<Rigidbody2D>();
+            //1. On bloque les controls + stop la vélocité quand on touche le sol
+            yield return new WaitUntil(() => pc._isGrounded);
             playerController.enabled = false;
+            rb.linearVelocity = Vector2.zero;
+            
+            //2. On lance l'aniamtion de dodo + les particules
             playerAnimator.SetBool("isSleeping", true);
+            SleepZzz.Play();
 
-            // 2. Fondu au noir (réutilise PlayFade du TransitionManager)
-            yield return StartCoroutine(
-                Manager.TransitionManager.Instance.PlayFadePublic(true)
+            //3. Fondu au noir (réutilise PlayFade du TransitionManager)
+            yield return TransitionManager.Instance.StartCoroutine(
+                TransitionManager.Instance.PlayFade(true, fadeDuration)
+            );
+            
+            //4. Stop des particules
+            SleepZzz.Stop();
+            
+            //5.  Attend 2 secondes dans le noir
+            yield return new WaitForSeconds(2f);
+            
+            //6. Set la scène sur la porte
+            door.sceneName = "Night";
+            
+            //7. Fondu de sortie
+            yield return TransitionManager.Instance.StartCoroutine(
+                TransitionManager.Instance.PlayFade(false, fadeDuration2)
             );
 
-            // 3. Son dodo
-            if (sleepSound != null)
-                audioSource.PlayOneShot(sleepSound);
-
-            // 4. Attend 3 secondes dans le noir
-            yield return new WaitForSeconds(3f);
-
-            // 5. Set la scène sur la porte
-            door.sceneName = "LevelNight";
-
-            // 6. isSleeping false
+            //8. Change l'naimation 
             playerAnimator.SetBool("isSleeping", false);
-
-            // 7. Fondu de sortie
-            yield return StartCoroutine(
-                Manager.TransitionManager.Instance.PlayFadePublic(false)
-            );
-
-            // 8. Redonne les controls
-            playerController.enabled = true;
+            
+            //9. Redonne les controls
+            pc.enabled = true;
         }
     }
 }

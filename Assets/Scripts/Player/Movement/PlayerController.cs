@@ -23,7 +23,7 @@ namespace Player
         //Variables pour check les collisions
         private RaycastHit2D _groundHit;
         private RaycastHit2D _headHit;
-        private bool _isGrounded;
+        public bool _isGrounded;
         private bool _bumpedHead;
 
         //Variables de saut
