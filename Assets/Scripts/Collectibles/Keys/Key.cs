@@ -17,6 +17,9 @@ namespace Collectibles.Keys
         [SerializeField] private SpriteRenderer doorSpriteRenderer;
         [SerializeField] private Animator doorAnimator;
         [SerializeField] private DoorEntrance doorEntrance;
+        [SerializeField] private NpcDialogue npcDialogue;
+        //bool utilisé pour les dialogues
+        public bool isCollected = false;
 
         protected override void OnCollected(GameObject player)
         {
@@ -24,10 +27,15 @@ namespace Collectibles.Keys
             {
                 //cas1: Ma clée qui fait changer de couleur la porte + la deverouille
                 case KeyType.ChangeColor:
+                    if (isCollected) return; // éviter de trigger plusieurs fois
+                    isCollected = true; // pour les dialogues
                     if (doorSpriteRenderer != null)
                         doorSpriteRenderer.color = Color.black;
                     if (doorEntrance != null)
                         doorEntrance.Unlock(); 
+                    if (npcDialogue != null)
+                        npcDialogue.TriggerKeyReaction();
+
                     break;
 
                 //cas2: Ma clée qui fait lance l'animation de la porte
