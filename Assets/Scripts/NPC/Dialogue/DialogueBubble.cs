@@ -1,4 +1,6 @@
-using System.Collections;
+namespace NPC.Dialogue
+{
+    using System.Collections;
 using TMPro;
 using UnityEngine;
 using DG.Tweening;
@@ -15,12 +17,12 @@ public class DialogueBubble : MonoBehaviour
     public float typeSpeed = 0.04f;
     public float fadeDuration = 0.2f;
 
-    private CanvasGroup canvasGroup;
+    private CanvasGroup _canvasGroup;
 
     void Awake()
     {
         //Initialisation
-        canvasGroup = GetComponent<CanvasGroup>();
+        _canvasGroup = GetComponent<CanvasGroup>();
         bubble.SetActive(false);
     }
 
@@ -30,8 +32,8 @@ public class DialogueBubble : MonoBehaviour
         // Affiche la bulle
         bubble.SetActive(true);
         // Fade in
-        canvasGroup.alpha = 0f;
-        canvasGroup.DOFade(1f, fadeDuration);
+        _canvasGroup.alpha = 0f;
+        _canvasGroup.DOFade(1f, fadeDuration);
 
         // Effet machine à écrire
         text.text = "";
@@ -45,14 +47,15 @@ public class DialogueBubble : MonoBehaviour
     public IEnumerator Hide()
     {
         // Fade out
-        yield return canvasGroup.DOFade(0f, fadeDuration).WaitForCompletion();
+        yield return _canvasGroup.DOFade(0f, fadeDuration).WaitForCompletion();
         bubble.SetActive(false);
         text.text = "";
     }
 
-// méthode pour afficher la flèche d'interaction
+    // méthode pour afficher la flèche d'interaction
     public void SetArrowVisible(bool visible)
     {
         arrow.SetActive(visible);
     }
+}
 }

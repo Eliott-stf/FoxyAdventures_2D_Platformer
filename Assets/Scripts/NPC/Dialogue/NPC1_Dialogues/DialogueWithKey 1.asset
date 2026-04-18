@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: DialogueWithKey 1
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - 'Va te servir '
+  - C'est un peu le bazar en bas..

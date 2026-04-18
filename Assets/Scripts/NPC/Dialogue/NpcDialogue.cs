@@ -1,4 +1,6 @@
-using System.Collections;
+namespace NPC.Dialogue
+{ 
+    using System.Collections;
 using UnityEngine;
 using Manager;
 using Collectibles.Keys;
@@ -17,7 +19,7 @@ public class NpcDialogue : MonoBehaviour
     [Header("Références")]
     public DialogueBubble bubble;
     public Key key;
-    public GameObject ButtonE;
+    public GameObject buttonE;
     [SerializeField] private SleepZzz exclamation;
     [SerializeField] private PlayerController playerController;
 
@@ -29,13 +31,25 @@ public class NpcDialogue : MonoBehaviour
     [Header("Animator")]
     public UnityEngine.Animator npcAnimator;
 
-    private bool playerInRange;
+    private bool _playerInRange;
     private bool isDialogueRunning;
+    
+    private Rigidbody2D _playerRb;
+    private SpriteRenderer _sr;
+    
+    void Awake()
+        {
+            _sr = GetComponent<SpriteRenderer>();
+            if (playerController != null)
+            {
+                _playerRb = playerController.GetComponent<Rigidbody2D>();
+            }
+        }
 
     void Update()
     {
         //On lance le dialogue a l'input du joueur
-        if (playerInRange && !isDialogueRunning && InputManager.InteractWasPressed)
+        if (_playerInRange && !isDialogueRunning && InputManager.InteractWasPressed)
         {
             DialogueData data = key.isCollected ? dialogueWithKey : dialogueWithoutKey;
             StartCoroutine(PlayDialogueInput(data));
@@ -46,10 +60,10 @@ public class NpcDialogue : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            playerInRange = true;
+            _playerInRange = true;
             // ne s'affiche pas si dialogue en cours
             if (!isDialogueRunning) 
-                ButtonE.SetActive(true);
+                buttonE.SetActive(true);
         }
     }
 
@@ -57,8 +71,8 @@ public class NpcDialogue : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            playerInRange = false;
-            ButtonE.SetActive(false);
+            _playerInRange = false;
+            buttonE.SetActive(false);
         }
     }
 
@@ -72,18 +86,16 @@ public class NpcDialogue : MonoBehaviour
     IEnumerator KeyReactionSequence()
 {
     isDialogueRunning = true;
-    Rigidbody2D rb = playerController.GetComponent<Rigidbody2D>();
 
     // flip vers le joueur au début
-    SpriteRenderer sr = GetComponent<SpriteRenderer>();
-    sr.flipX = !sr.flipX;
+    _sr.flipX = !_sr.flipX;
 
     // attend que le joueur touche le sol
     yield return new WaitUntil(() => playerController._isGrounded);
 
     // bloque les controls et stoppe la vélocité
     playerController.enabled = false;
-    rb.linearVelocity = Vector2.zero;
+    _playerRb.linearVelocity = Vector2.zero;
 
     // joue l'animation d'exclamation
     exclamation.Play();
@@ -116,14 +128,14 @@ public class NpcDialogue : MonoBehaviour
     playerController.enabled = true;
 
     // flip retour à l'état initial
-    sr.flipX = !sr.flipX;
+    _sr.flipX = !_sr.flipX;
 }
 
     // Dialogue avec input joueur 
     IEnumerator PlayDialogueInput(DialogueData data)
     {
         isDialogueRunning = true;
-        ButtonE.SetActive(false);
+        buttonE.SetActive(false);
 
         // boucle à travers les lignes de dialogue du DialogueData
         for (int i = 0; i < data.lines.Length; i++)
@@ -153,4 +165,5 @@ public class NpcDialogue : MonoBehaviour
 
         yield return StartCoroutine(bubble.Hide());
     }
+}
 }

@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: DialogueWithoutKey
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - T chaud mon gars
-  - 'vzy viens te viserrr poto '
-  - dans l'bueno
+  - Hey, tu tombes a pic j'ai besoin d'un coup de main
+  - "Tu vois cette cl\xE9 en haut ? "
+  - "Il faut que tu me la r\xE9cup\xE8res.."
+  - "Je l'ai coinc\xE9e la haut et maintenant j'arrive pas \xE0 la r\xE9cup\xE9rer  "
+  - Si seulement j'avais une echelle...
+  - "Tu peux m'aider s'il te pla\xEEt."

@@ -3,6 +3,7 @@ using Door;
 namespace Collectibles.Keys
 {
     using Collectibles;
+    using NPC.Dialogue;
     using UnityEngine;
 
     public enum KeyType

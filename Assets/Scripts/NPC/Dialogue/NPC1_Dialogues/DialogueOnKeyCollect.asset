@@ -13,6 +13,9 @@ MonoBehaviour:
   m_Name: DialogueOnKeyCollect
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - "Prend la cl\xE9 en haut stp wlh "
-  - j'ai mal au dos sa mere
-  - espece de pti pd va
+  - "Tu l'as r\xE9cup\xE9r\xE9e !"
+  - Merci infiniment !
+  - "J'ai pas grand-chose \xE0 te donner mais..."
+  - Va faire un tour dans la cave
+  - "Si quelque chose t'int\xE9resse"
+  - 'Tu peux le prendre. '
