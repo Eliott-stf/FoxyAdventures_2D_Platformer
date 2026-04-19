@@ -13,9 +13,10 @@ MonoBehaviour:
   m_Name: DialogueWithoutKey
   m_EditorClassIdentifier: Assembly-CSharp::DialogueData
   lines:
-  - Hey, tu tombes a pic j'ai besoin d'un coup de main
+  - Hey, tu tombes a pic j'ai besoin d'aide
   - "Tu vois cette cl\xE9 en haut ? "
   - "Il faut que tu me la r\xE9cup\xE8res.."
-  - "Je l'ai coinc\xE9e la haut et maintenant j'arrive pas \xE0 la r\xE9cup\xE9rer  "
+  - "Je l'ai coinc\xE9e la haut comme un idiot "
+  - "Impossible de la r\xE9cup\xE9rer "
   - Si seulement j'avais une echelle...
   - "Tu peux m'aider s'il te pla\xEEt."
