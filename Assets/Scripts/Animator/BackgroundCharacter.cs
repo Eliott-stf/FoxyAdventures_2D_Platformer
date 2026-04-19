@@ -35,6 +35,9 @@ namespace Animator
         
         [Header("Bounds")]
         public BoxCollider2D bounds;
+
+        [Header("Spawn")]
+        public Transform doorSpawnPoint;
         
         //propriètes pour stocker les component 
         private HUDFade _tutoFade;
@@ -55,10 +58,30 @@ namespace Animator
             _lifeDisplayFade = lifeDisplay.GetComponent<HUDFade>();
             _cameraConfiner = virtualCamera.GetComponent<CinemachineConfiner2D>();
             
-            //On place le joueur au point A 
-            transform.position = new Vector2(startX, transform.position.y);
+            //Si l'intro a déja été jouée on skip l'anim et on spawn le joueur devant la porte
+            if (PlayerState.introPlayed)
+                {
+                    // skip l'intro, spawn devant la porte
+                    transform.position = doorSpawnPoint.position;
+                    playerController.enabled = true;
+                    _state = State.Finished;
+                    
+                    // active le HUD directement
+                    _tutoFade.Show();
+                    _lifeDisplayFade.Show();
 
-            //On désac les controls
+                    // bloque la camera
+                    confiner.offset = new Vector2(39.963f, 14.736f);
+                    confiner.size = new Vector2(130.181f, 35.425f);
+                    _cameraConfiner.InvalidateBoundingShapeCache();
+
+                    //mur invisible pour pas retourner au menu
+                    bounds.isTrigger = false;
+                    return;
+                }
+
+            // Sinon intro normale
+            transform.position = new Vector2(startX, transform.position.y);
             if (playerController != null)
                 playerController.enabled = false;
         }

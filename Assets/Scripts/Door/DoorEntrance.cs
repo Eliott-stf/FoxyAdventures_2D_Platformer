@@ -9,6 +9,7 @@ namespace Door
         private bool _playerInRange = false;
         private bool isUnlocked = false;
         public GameObject interactPrompt;
+        [SerializeField] private SpriteRenderer doorSpriteRenderer;
 
         void Update()
         {
@@ -19,11 +20,22 @@ namespace Door
             }
         }
 
+        void Start()
+        {
+            if (PlayerState.caveDoorsUnlocked)
+            {
+                Unlock();
+                // restaure la couleur noire
+                if (doorSpriteRenderer != null)
+                    doorSpriteRenderer.color = Color.black;
+            }
+        }
+
         //méthode appellée quand on ramasse la clée (key;cs)
         public void Unlock()
         {
             isUnlocked = true;
-            //On save dans le state pour garder la porte ouverte peut importe la scen e
+            //On save dans le state pour garder la porte ouverte peut importe la scene
             PlayerState.caveDoorsUnlocked = true;
         }
 

@@ -2,11 +2,19 @@ namespace Enemies
 {
     using Player.Health;
     using UnityEngine;
+    using Utils;
 
     public class EnemyDamage : MonoBehaviour
     {
         public PlayerHealth playerHealth;
         public int damage = 2;
+
+        void Start()
+        {
+            // On regarde ds le state si l'ennemi a déjà été tué, si oui, on le détruit immédiatement
+            if (PlayerState.killedEnemies.Contains(GameUtils.GetId(gameObject)))
+                Destroy(gameObject);
+        }
 
         private void OnCollisionEnter2D(Collision2D collision)
         {
@@ -18,6 +26,8 @@ namespace Enemies
                 // Si le joueur arrive par le dessus 
                 if (contactNormal.y < -0.5f)
                 {
+                    // on sauvegarde l'ennemi comme tué dans le state
+                    PlayerState.killedEnemies.Add(GameUtils.GetId(gameObject));
                     // Destroy l'ennemi
                     Destroy(gameObject);
                 }

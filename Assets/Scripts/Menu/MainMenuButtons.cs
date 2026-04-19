@@ -49,6 +49,8 @@ namespace Menu
         //Méthode du bouton PLay
         public void PlayGame()
         {
+            //On set dans le state que l'intro a déja été lancée
+            PlayerState.introPlayed = true;
             StartCoroutine(StartGameSequence());
         }
 

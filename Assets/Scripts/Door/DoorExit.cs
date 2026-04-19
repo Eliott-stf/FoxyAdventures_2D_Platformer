@@ -19,6 +19,13 @@ namespace Door
             }
         }
 
+        void Start()
+        {
+            //On vérifie si le state a une scène de sortie de porte définie (après le jump potion) et on la set
+            if (PlayerState.doorExitSceneName != "")
+                sceneName = PlayerState.doorExitSceneName;
+        }
+
         void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag("Player"))

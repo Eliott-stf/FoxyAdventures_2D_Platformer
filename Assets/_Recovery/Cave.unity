@@ -1985,7 +1985,7 @@ Transform:
   m_GameObject: {fileID: 638908919}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.26825714, y: -15.200718, z: -10}
+  m_LocalPosition: {x: 0.5286789, y: -15.200718, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2971,7 +2971,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2d55b500d9e0b4b6a9fd309cde094768, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::DoorExit
-  sceneName: LevelDay
+  sceneName: TestTransition
   interactPrompt: {fileID: 1620404182}
 --- !u!61 &812684473
 BoxCollider2D:

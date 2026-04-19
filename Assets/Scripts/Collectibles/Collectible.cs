@@ -1,6 +1,7 @@
 namespace Collectibles
 {
     using UnityEngine;
+    using Utils;
 
     public abstract class Collectible : MonoBehaviour
     {
@@ -13,10 +14,19 @@ namespace Collectibles
             transform.Rotate(rotationAxis * rotationSpeed);
         }
 
+        protected virtual void Start()
+        {
+            // si déjà collecté, on le détruit immédiatement
+            if (PlayerState.collectedItems.Contains(GameUtils.GetId(gameObject)))
+                Destroy(gameObject);
+        }
+
         void OnTriggerEnter2D(Collider2D other)
         {
             if (other.CompareTag("Player"))
             {
+                // sauvegarde dans le state 
+                PlayerState.collectedItems.Add(GameUtils.GetId(gameObject));
                 //lance la fonction onCollect et detruit l'objet
                 OnCollected(other.gameObject);
                 Destroy(gameObject);

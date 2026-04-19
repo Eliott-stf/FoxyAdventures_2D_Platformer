@@ -22,6 +22,22 @@ namespace Collectibles.Keys
         //bool utilisé pour les dialogues
         public bool isCollected = false;
 
+        protected override void Start()
+        {
+            //Start de la classe parent 
+            base.Start();
+            //On détruit le collider (porte ouverte) si elle a déja été ouverte dans le state 
+            if (keyType == KeyType.TriggerAnimation && PlayerState.frontDoorUnlocked)
+            {
+                BoxCollider2D doorCollider = doorAnimator.GetComponent<BoxCollider2D>();
+                if (doorCollider != null)
+                    Destroy(doorCollider);
+
+                // remet la porte en position ouverte
+                doorAnimator.SetTrigger("Open");
+            }
+        }
+
         protected override void OnCollected(GameObject player)
         {
             switch (keyType)
@@ -43,7 +59,10 @@ namespace Collectibles.Keys
                 case KeyType.TriggerAnimation:
                     if (doorAnimator != null)
                         doorAnimator.SetTrigger("Open");
-                    
+
+                    //On save l'état dans le state
+                    PlayerState.frontDoorUnlocked = true; 
+
                     //On retire le collider
                         BoxCollider2D doorCollider = doorAnimator.GetComponent<BoxCollider2D>();
                     if (doorCollider != null)

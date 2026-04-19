@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: DialogueChained
   m_EditorClassIdentifier: Assembly-CSharp::NPC.Dialogue.DialogueData
   lines:
-  - "T'es enfin r\xE9veil\xE9e !"
+  - "T'es enfin r\xE9veill\xE9 !"
   - "Viens m'aider s'il te pla\xEEt. "
   - J'ai voulu chasser ces chauves-souris...
   - "Je me retrouve bloqu\xE9..."

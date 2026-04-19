@@ -34,8 +34,6 @@ namespace Collectibles.Abilities
                 PlayerState.numberOfJumpsAllowed = 2;
                 //set la couleur du text du Tuto
                 doubleJumpText.color = new Color(0xE1 / 255f, 0xA9 / 255f, 0xA9 / 255f);
-                //Lance l'anim du canva d'achievement "jump"
-                FindFirstObjectByType<AchievementManager>().Unlock("Jump");
                 // Lance la coroutine depuis le TransitionManager
                 TransitionManager.Instance.StartCoroutine(SleepSequence(pc));
                 
@@ -65,8 +63,9 @@ namespace Collectibles.Abilities
             //5.  Attend 2 secondes dans le noir
             yield return new WaitForSeconds(2f);
             
-            //6. Set la scène sur la porte
+            //6. Set la scène sur la porte + dans le state 
             door.sceneName = "TestNight";
+            PlayerState.doorExitSceneName = "TestNight";
             
             //7. Fondu de sortie
             yield return TransitionManager.Instance.StartCoroutine(
@@ -75,8 +74,11 @@ namespace Collectibles.Abilities
 
             //8. Change l'naimation 
             playerAnimator.SetBool("isSleeping", false);
+
+            //9. Lance l'anim du canva d'achievement "jump"
+            FindFirstObjectByType<AchievementManager>().Unlock("Jump");
             
-            //9. Redonne les controls
+            //10. Redonne les controls
             pc.enabled = true;
         }
     }
