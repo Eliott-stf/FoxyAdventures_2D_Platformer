@@ -67,6 +67,10 @@ namespace Player
             _isFacingRight = true;
             
             MoveStats = Instantiate(MoveStats);
+
+            // On set les capacités avec celle sauvegardées dans le state 
+            MoveStats.numberOfJumpsAllowed = PlayerState.numberOfJumpsAllowed;
+            MoveStats.numberOfDashes = PlayerState.numberOfDashes;
         }
 
         private void Update()

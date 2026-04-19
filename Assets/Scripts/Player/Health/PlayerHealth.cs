@@ -24,8 +24,10 @@ namespace Player.Health
         // Start is called once before the first execution of Update after the MonoBehaviour is created
         void Start()
         {
-            //on Init et récupère les components
-            health = maxHealth;
+            // Restaure la vie de la scène précédente
+            health = PlayerState.currentHealth;
+
+            //Récup des composant 
             _playerController = GetComponent<PlayerController>();
             _impulseSource = GetComponent<CinemachineImpulseSource>();
         }
@@ -34,6 +36,8 @@ namespace Player.Health
         {
             //On set la vie perdu en fonciton du nb de damage de l'enemie
             health -= amount;
+            //Sauvegarde dans le state 
+            PlayerState.currentHealth = health;
 
             //knockback
             _playerController.HorizontalVelocity = knockbackDir.x * knockbackForce;
@@ -47,8 +51,9 @@ namespace Player.Health
         }
         private void Respawn()
         {
-            //Reset vies et vélocité
+            //Reset vies + State et vélocité
             health = maxHealth;
+            PlayerState.currentHealth = maxHealth;
             transform.position = respawnPoint.position;
             
             _playerController.HorizontalVelocity = 0f;

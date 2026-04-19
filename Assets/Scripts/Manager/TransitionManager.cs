@@ -91,7 +91,7 @@ namespace Manager
          * Méthode d'aniamtions pour les transitions
          */
 
-        IEnumerator PlayCurtain(bool isIn)
+        public IEnumerator PlayCurtain(bool isIn)
         {
             float from = isIn ? Screen.height : 0;
             float to   = isIn ? 0 : -Screen.height;
@@ -119,7 +119,7 @@ namespace Manager
                 _overlay.anchoredPosition = new Vector2(0, Screen.height);
         }
 
-        IEnumerator PlayFlash(bool isIn)
+        public IEnumerator PlayFlash(bool isIn, float customDuration = -1f)
         {
             _overlay.anchoredPosition = Vector2.zero;
             _overlayImage.color = new Color(0, 0, 0, 1f);
@@ -128,9 +128,19 @@ namespace Manager
 
             if (!isIn)
             {
-                yield return _overlayImage.DOFade(0f, duration).WaitForCompletion();
+                yield return _overlayImage.DOFade(0f, customDuration > 0 ? customDuration : duration).WaitForCompletion();
                 _overlay.anchoredPosition = new Vector2(0, Screen.height);
             }
+        }
+
+        public IEnumerator FadeIn(float customDuration = -1f)
+        {
+            yield return StartCoroutine(PlayFade(true, customDuration));
+        }
+
+        public IEnumerator FadeOut(float customDuration = -1f)
+        {
+            yield return StartCoroutine(PlayFade(false, customDuration));
         }
     }
 }

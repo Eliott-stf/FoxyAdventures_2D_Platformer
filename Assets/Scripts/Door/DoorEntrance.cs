@@ -23,6 +23,8 @@ namespace Door
         public void Unlock()
         {
             isUnlocked = true;
+            //On save dans le state pour garder la porte ouverte peut importe la scen e
+            PlayerState.caveDoorsUnlocked = true;
         }
 
         void OnTriggerEnter2D(Collider2D other)

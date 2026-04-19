@@ -29,8 +29,9 @@ namespace Collectibles.Abilities
             PlayerController pc = player.GetComponentInParent<PlayerController>();
             if (pc != null)
             {
-                //On lui ajoute un jump
+                //On lui ajoute un jump + dans le state 
                 pc.MoveStats.numberOfJumpsAllowed = 2;
+                PlayerState.numberOfJumpsAllowed = 2;
                 //set la couleur du text du Tuto
                 doubleJumpText.color = new Color(0xE1 / 255f, 0xA9 / 255f, 0xA9 / 255f);
                 //Lance l'anim du canva d'achievement "jump"
@@ -65,7 +66,7 @@ namespace Collectibles.Abilities
             yield return new WaitForSeconds(2f);
             
             //6. Set la scène sur la porte
-            door.sceneName = "Night";
+            door.sceneName = "TestNight";
             
             //7. Fondu de sortie
             yield return TransitionManager.Instance.StartCoroutine(
