@@ -11,7 +11,7 @@ namespace UI
 
         void Start()
         {
-            // Vérifie si le double jump a été débloqué dans le PlayerState
+            // Vérifie si le double jump a été débloqué dans le PlayerState ^^
             if (PlayerState.numberOfJumpsAllowed >= 2 && doubleJumpText != null)
             {
                 doubleJumpText.color = new Color(0xE1 / 255f, 0xA9 / 255f, 0xA9 / 255f);
