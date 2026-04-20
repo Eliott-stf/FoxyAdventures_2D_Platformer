@@ -15,8 +15,19 @@ public static class PlayerState
     //State pour que l'intro ne se rejoue pas quand on retourne dans la scène 
     public static bool introPlayed = false;
 
-    public static string doorExitSceneName = "TestTransition";
+    public static string doorExitSceneName = "DayLvl";
 
     public static HashSet<string> collectedItems = new HashSet<string>();
     public static HashSet<string> killedEnemies = new HashSet<string>();
+
+    // State pour la clé collectée 
+    public static bool keyCollected = false;
+    public static Vector3 npcPositionAfterKeyCollection = Vector3.zero;
+    
+    // State pour l'animation d'intro du night mode (one-shot)
+    public static bool isTriggerPlayed = false;
+    
+    // State pour le NPC sauvé (scene nuit)
+    public static bool npcRescued = false;
+    public static Vector3 npcRescuedPosition = Vector3.zero;
 }

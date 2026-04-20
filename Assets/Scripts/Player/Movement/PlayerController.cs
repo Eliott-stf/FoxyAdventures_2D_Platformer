@@ -2,6 +2,7 @@ namespace Player
 {
     using UnityEngine;
     using Manager;
+    using Manager.Audio;
 
     public class PlayerController : MonoBehaviour
     {
@@ -306,6 +307,7 @@ namespace Player
             ResetDashValues();
             _animator.SetBool("isJumping", true);
             particle?.Play();
+            SoundManager.Instance.PlaySound3D("Jump", transform.position);
         }
 
         private void Jump()
@@ -473,6 +475,7 @@ namespace Player
             _dashTimer = 0f;
             _dashOnGroundTimer = MoveStats.timeBtwDashesOnGround;
             dashDust.Play();
+            SoundManager.Instance.PlaySound2D("Dash");
 
             // ResetJumpValue();
 

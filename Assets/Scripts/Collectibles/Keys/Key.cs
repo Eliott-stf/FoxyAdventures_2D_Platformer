@@ -5,6 +5,7 @@ namespace Collectibles.Keys
     using Collectibles;
     using NPC.Dialogue;
     using UnityEngine;
+    using Manager.Audio;
 
     public enum KeyType
     {
@@ -46,6 +47,8 @@ namespace Collectibles.Keys
                 case KeyType.ChangeColor:
                     if (isCollected) return; // éviter de trigger plusieurs fois
                     isCollected = true; // pour les dialogues
+                    // Sauvegarde dans le PlayerState que la clé a été collectée
+                    PlayerState.keyCollected = true;
                     if (doorSpriteRenderer != null)
                         doorSpriteRenderer.color = Color.black;
                     if (doorEntrance != null)
@@ -58,7 +61,10 @@ namespace Collectibles.Keys
                 //cas2: Ma clée qui fait lance l'animation de la porte
                 case KeyType.TriggerAnimation:
                     if (doorAnimator != null)
+                    {
                         doorAnimator.SetTrigger("Open");
+                        SoundManager.Instance.PlaySound3D("DoorOpen", doorAnimator.transform.position);
+                    }
 
                     //On save l'état dans le state
                     PlayerState.frontDoorUnlocked = true; 

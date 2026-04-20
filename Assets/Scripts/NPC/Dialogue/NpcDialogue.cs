@@ -4,8 +4,10 @@ namespace NPC.Dialogue
     using UnityEngine;
     using Manager;
     using Collectibles.Keys;
+    using Collectibles.Coin;
     using Animator;
     using Player;
+    using Manager.Audio;
 
     public class NpcDialogue : MonoBehaviour
     {
@@ -28,6 +30,7 @@ namespace NPC.Dialogue
         public GameObject buttonE;
         [SerializeField] private SleepZzz exclamation;
         [SerializeField] private PlayerController playerController;
+        [SerializeField] private Coin coin;
 
         //Mouvement et animation de la scene de Jour
         [Header("Mouvement")]
@@ -54,6 +57,7 @@ namespace NPC.Dialogue
         private Rigidbody2D _playerRb;
         private SpriteRenderer _playerSr;
         private SpriteRenderer _sr;
+        private Collider2D _coinCollider;
         #endregion
 
         #region Unity Lifecycle
@@ -66,13 +70,36 @@ namespace NPC.Dialogue
                 _playerRb = playerController.GetComponent<Rigidbody2D>();
                 _playerSr = playerController.GetComponent<SpriteRenderer>();
             }
+
+            if (coin != null)
+            {
+                _coinCollider = coin.GetComponent<Collider2D>();
+            }
             _isChained = startsChained;
         }
 
         void Start()
         {
-            if (startsChained)
+            if (startsChained && !PlayerState.npcRescued)
                 npcAnimator.SetBool("isWallGrab", true);
+            
+            // Restaure la position du NPC si la clé a déjà été collectée seulement pour le NPC de jour
+            if (!startsChained && PlayerState.keyCollected && PlayerState.npcPositionAfterKeyCollection != Vector3.zero)
+            {
+                transform.position = PlayerState.npcPositionAfterKeyCollection;
+            }
+
+            // Restaure la position du NPC si il a déjà été sauvé pour le NPC de nuit
+            if (startsChained && PlayerState.npcRescued && PlayerState.npcRescuedPosition != Vector3.zero)
+            {
+                transform.position = PlayerState.npcRescuedPosition;
+            }
+            
+            // Set le isTrigger du coin selon si le NPC a été sauvé
+            if (_coinCollider != null)
+            {
+                _coinCollider.isTrigger = PlayerState.npcRescued;
+            }
         }
 
        void Update()
@@ -80,18 +107,18 @@ namespace NPC.Dialogue
             // NPC de jour : dialogue selon si la clé est collectée ou non 
             if (_playerInRange && !isDialogueRunning && !_isChained && !_rescueDone && InputManager.InteractWasPressed)
             {
-                DialogueData data = (key != null && key.isCollected) ? dialogueWithKey : dialogueWithoutKey;
+                DialogueData data = PlayerState.keyCollected ? dialogueWithKey : dialogueWithoutKey;
                 StartCoroutine(PlayDialogueInput(data));
             }
 
             // NPC de nuit enchaîné : input E pour lancer le sauvetage 
-            if (_playerInRange && _isChained && !isDialogueRunning && !_rescueDone && InputManager.InteractWasPressed)
+            if (_playerInRange && _isChained && !PlayerState.npcRescued && !isDialogueRunning && !_rescueDone && InputManager.InteractWasPressed)
             {
                 StartCoroutine(RescueSequence());
             }
 
             // NPC de nuit libéré : dialogue récompense après sauvetage 
-            if (_playerInRange && !isDialogueRunning && _rescueDone && !_isChained && InputManager.InteractWasPressed)
+            if (_playerInRange && !isDialogueRunning && (PlayerState.npcRescued || _rescueDone) && InputManager.InteractWasPressed)
             {
                 StartCoroutine(PlayDialogueInput(dialogueRecompense));
             }
@@ -129,6 +156,8 @@ namespace NPC.Dialogue
         public void TriggerChainedSequence()
         {
             if (isDialogueRunning) return;
+            // évite de trigger plusieurs fois
+            if(PlayerState.isTriggerPlayed) return; 
             StartCoroutine(ChainedSequence());
         }
 
@@ -148,13 +177,17 @@ namespace NPC.Dialogue
         IEnumerator ChainedSequence()
         {
             isDialogueRunning = true;
+            //on set le state pour pas rejouer la séquence 
+            PlayerState.isTriggerPlayed = true;
 
             // On lock le player
             yield return StartCoroutine(LockPlayerRoutine());
             
-            // joue l'animation d'exclamation
+            // joue l'animation d'exclamation avec le son (pour synchro)
             exclamation.Play();
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(0.5f);
+            SoundManager.Instance.PlaySound2D("!");
+            yield return new WaitForSeconds(1f);
             exclamation.Stop();
 
             //flip le joueur vers le pnj en dur
@@ -185,6 +218,11 @@ namespace NPC.Dialogue
             isDialogueRunning = true;
             _rescueDone = true;
             buttonE.SetActive(false);
+            //on set dans le state pour la pos du npc 
+            PlayerState.npcRescued = true;
+
+            // on met istrigger sur la piece pour finir le level 
+            if (_coinCollider) _coinCollider.isTrigger = true;
 
             // bloque le joueur
             yield return StartCoroutine(LockPlayerRoutine());
@@ -196,6 +234,8 @@ namespace NPC.Dialogue
             _isChained = false;
             npcAnimator.SetBool("isWallGrab", false);
             transform.position = rescueSpawnPoint.position;
+            // on set sa position dans le state 
+            PlayerState.npcRescuedPosition = transform.position;
 
             // fondu de sortie
             yield return StartCoroutine(TransitionManager.Instance.PlayFade(false, fadeDuration));
@@ -219,15 +259,20 @@ namespace NPC.Dialogue
 
             // flip vers le joueur au début
             _sr.flipX = !_sr.flipX; 
-
+            
             // on bloque le joueur 
             yield return StartCoroutine(LockPlayerRoutine());
+            
             //on force l'anim idle
-            playerAnimator.Play("Idle");
+            playerAnimator.SetBool("isJumping", false);
+            playerAnimator.SetBool("isRunning", false);
+            playerAnimator.SetBool("isWalking", false);
 
-            // joue l'animation d'exclamation
+            // joue l'animation d'exclamation avec le son (pour synchro)
             exclamation.Play();
-            yield return new WaitForSeconds(1.5f);
+            yield return new WaitForSeconds(0.5f);
+            SoundManager.Instance.PlaySound2D("!");
+            yield return new WaitForSeconds(1f);
             exclamation.Stop();
 
             // marche vers le point cible
@@ -242,6 +287,8 @@ namespace NPC.Dialogue
                 yield return null;
             }
             transform.position = targetPoint.position;
+            // Sauvegarde la position du NPC après le déplacement
+            PlayerState.npcPositionAfterKeyCollection = transform.position;
             npcAnimator.SetBool("isWalking", false);
 
             // regarde vers le haut pour le dialogue

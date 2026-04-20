@@ -4,7 +4,8 @@ namespace Menu
     using UnityEngine;
     using UnityEngine.EventSystems;
     using TMPro;
-    using Animator; 
+    using Animator;
+    using Manager.Audio; 
 
     public class MainMenuButton : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
     {
@@ -49,6 +50,8 @@ namespace Menu
         //Méthode du bouton PLay
         public void PlayGame()
         {
+            //Joue le son du clic
+            SoundManager.Instance.PlaySound2D("UI");
             //On set dans le state que l'intro a déja été lancée
             PlayerState.introPlayed = true;
             StartCoroutine(StartGameSequence());
@@ -57,6 +60,8 @@ namespace Menu
         //Méthode du bouton Quit
         public void QuitGame()
         {
+            //Joue le son du clic
+            SoundManager.Instance.PlaySound2D("UI");
             Application.Quit();
         }
 

@@ -4,6 +4,7 @@ namespace Animator
     using TMPro;
     using DG.Tweening;
     using System.Collections;
+    using Manager.Audio;
 
     public class SleepZzz : MonoBehaviour
     {
@@ -24,6 +25,7 @@ namespace Animator
         {
             gameObject.SetActive(true);
             StartCoroutine(AnimateZs());
+            
         }
 
         public void Stop()

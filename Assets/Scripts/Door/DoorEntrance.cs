@@ -2,6 +2,7 @@ namespace Door
 {
     using UnityEngine;
     using Manager;
+    using Manager.Audio;
 
     public class DoorEntrance : MonoBehaviour
     {
@@ -17,17 +18,26 @@ namespace Door
             if (_playerInRange && isUnlocked && InputManager.InteractWasPressed)
             {
                 TransitionManager.Instance.LoadScene(sceneName, "fade");
+                MusicManager.Instance.PlayMusic("Cave");
+                MusicManager.Instance.PlayAmbient(PlayerState.numberOfJumpsAllowed >= 2 ? "AmbientNuit" : "AmbientMenu");
             }
         }
 
         void Start()
         {
+            // Vérifie si la porte de la cave a été déverrouillée (depuis scene nuit)
             if (PlayerState.caveDoorsUnlocked)
             {
                 Unlock();
                 // restaure la couleur noire
                 if (doorSpriteRenderer != null)
                     doorSpriteRenderer.color = Color.black;
+            }
+            
+            // Vérifie si la porte d'entrée  a été déverrouillée
+            if (PlayerState.frontDoorUnlocked)
+            {
+                Unlock();
             }
         }
 

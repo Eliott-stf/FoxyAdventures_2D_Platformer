@@ -4,8 +4,9 @@ namespace NPC.Dialogue
 using TMPro;
 using UnityEngine;
 using DG.Tweening;
+    using Manager.Audio;
 
-public class DialogueBubble : MonoBehaviour
+    public class DialogueBubble : MonoBehaviour
 {
     //Références
     [SerializeField] private TMP_Text text;
@@ -35,13 +36,19 @@ public class DialogueBubble : MonoBehaviour
         _canvasGroup.alpha = 0f;
         _canvasGroup.DOFade(1f, fadeDuration);
 
+        // Lance le son de dialogue
+        SoundManager.Instance.PlaySound2D("Dialogue");
+
         // Effet machine à écrire
         text.text = "";
         foreach (char c in line)
         {
-            text.text += c;
+            text.text += c; 
             yield return new WaitForSeconds(typeSpeed);
         }
+
+        // Arrête le son à la fin de la ligne
+        SoundManager.Instance.StopSound();
     }
 
     public IEnumerator Hide()

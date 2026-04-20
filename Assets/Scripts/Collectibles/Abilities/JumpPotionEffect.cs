@@ -9,7 +9,8 @@ namespace Collectibles.Abilities
     using UnityEngine;
     using Collectibles;
     using TMPro;
-    
+    using Manager.Audio;
+
     public class JumpPotionEffect : Collectible
     {
         [Header("Références")]
@@ -42,6 +43,11 @@ namespace Collectibles.Abilities
         
         IEnumerator SleepSequence(PlayerController pc)
         {
+            //On joue le son de powerup Jump
+            SoundManager.Instance.PlaySound2D("Dash");
+            //On joue le son de dodo
+            SoundManager.Instance.PlaySound2D("SleepIn");
+            
             Rigidbody2D rb = playerController.GetComponent<Rigidbody2D>();
             //1. On bloque les controls + stop la vélocité quand on touche le sol
             yield return new WaitUntil(() => pc._isGrounded);
@@ -62,15 +68,21 @@ namespace Collectibles.Abilities
             
             //5.  Attend 2 secondes dans le noir
             yield return new WaitForSeconds(2f);
+
+            //On joue le son de réveil
+            SoundManager.Instance.PlaySound2D("SleepOut");
             
             //6. Set la scène sur la porte + dans le state 
-            door.sceneName = "TestNight";
-            PlayerState.doorExitSceneName = "TestNight";
+            door.sceneName = "NightLvl";
+            PlayerState.doorExitSceneName = "NightLvl";
             
             //7. Fondu de sortie
             yield return TransitionManager.Instance.StartCoroutine(
                 TransitionManager.Instance.PlayFade(false, fadeDuration2)
             );
+
+            //sound
+            MusicManager.Instance.PlayAmbient("AmbientNuit");
 
             //8. Change l'naimation 
             playerAnimator.SetBool("isSleeping", false);

@@ -2,6 +2,7 @@ namespace Manager
 {
     using UnityEngine;
     using DG.Tweening;
+    using Manager.Audio;
 
     public class AchievementManager : MonoBehaviour
     {
@@ -28,12 +29,16 @@ namespace Manager
             //anim de la pos A et B smooth
             panel.anchoredPosition = startPos;
             panel.gameObject.SetActive(true);
+            // Son d'entrée de l'achievement
+            SoundManager.Instance.PlaySound2D("Dash");
             panel.DOAnchorPos(endPos, duration)
                 .SetEase(Ease.OutBack)
                 .OnComplete(() =>
                 {
                     DOVirtual.DelayedCall(2f, () =>
                     {
+                        // Son de sortie de l'achievement
+                        SoundManager.Instance.PlaySound2D("Dash");
                         panel.DOAnchorPos(startPos, duration)
                             .SetEase(Ease.InBack)
                             .OnComplete(() => panel.gameObject.SetActive(false));

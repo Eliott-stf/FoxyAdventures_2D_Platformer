@@ -3,6 +3,7 @@ namespace Enemies
     using Player.Health;
     using UnityEngine;
     using Utils;
+    using Manager.Audio;
 
     public class EnemyDamage : MonoBehaviour
     {
@@ -28,12 +29,15 @@ namespace Enemies
                 {
                     // on sauvegarde l'ennemi comme tué dans le state
                     PlayerState.killedEnemies.Add(GameUtils.GetId(gameObject));
+                    // Joue le son de coup
+                    SoundManager.Instance.PlaySound2D("Bump");
                     // Destroy l'ennemi
                     Destroy(gameObject);
                 }
                 else
                 {
                     // Collision latérale donc le joueur perd de la vie + knockback
+                    SoundManager.Instance.PlaySound2D("Hurt");
                     Vector2 knockbackDir = (collision.transform.position - transform.position).normalized;
                     playerHealth.TakeDamage(damage, knockbackDir);
                 }

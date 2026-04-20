@@ -6,6 +6,7 @@ namespace Collectibles.Abilities
     using UnityEngine;
     using Player;
     using TMPro;
+    using Manager.Audio;
 
     public class DashPotionEffect : Collectible
     {
@@ -20,6 +21,8 @@ namespace Collectibles.Abilities
                 PlayerState.numberOfDashes = 1;
                 //set la couleur du text du Tuto
                 dashText.color = new Color(0xE1 / 255f, 0xA9 / 255f, 0xA9 / 255f);
+                //Joue le son du powerup
+                SoundManager.Instance.PlaySound2D("Dash");
                 //Lance l'anim du canva d'achievement "dash"
                 FindFirstObjectByType<AchievementManager>().Unlock("Dash");
             }

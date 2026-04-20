@@ -3,6 +3,7 @@ using TMPro;
 namespace Menu
 {
     using UnityEngine;
+    using Manager.Audio;
 
     public class PauseMenu : MonoBehaviour
     {
@@ -28,6 +29,7 @@ namespace Menu
                 else
                 {
                     // fermé doncon ouvre
+                    SoundManager.Instance.PlaySound2D("UI");
                     pauseMenu.SetActive(true); 
                     Time.timeScale = 0;
                 }
@@ -37,6 +39,7 @@ namespace Menu
         //méthode pour fermer 
         public void Resume()
         {
+            SoundManager.Instance.PlaySound2D("UI");
             pauseMenu.SetActive(false);
             Time.timeScale = 1;
         }
@@ -44,6 +47,7 @@ namespace Menu
         //méthode pour enlever le HUD 
         public void NoHud()
         {
+            SoundManager.Instance.PlaySound2D("UI");
             //pr le toggle
             hudVisible = !hudVisible;
             
@@ -55,8 +59,10 @@ namespace Menu
             noHudButtonText.text = hudVisible ? "Disable HUD" : "Enable HUD";
         }
 
+        //retiré 
         public void MainMenu()
         {
+            SoundManager.Instance.PlaySound2D("UI");
             UnityEngine.SceneManagement.SceneManager.LoadScene("Menu");
         }
     }

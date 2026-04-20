@@ -132,15 +132,5 @@ namespace Manager
                 _overlay.anchoredPosition = new Vector2(0, Screen.height);
             }
         }
-
-        public IEnumerator FadeIn(float customDuration = -1f)
-        {
-            yield return StartCoroutine(PlayFade(true, customDuration));
-        }
-
-        public IEnumerator FadeOut(float customDuration = -1f)
-        {
-            yield return StartCoroutine(PlayFade(false, customDuration));
-        }
     }
 }

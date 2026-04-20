@@ -5,6 +5,8 @@ namespace Animator
 {
     using UnityEngine;
     using Menu;
+    using System.Collections;
+    using Manager.Audio;
 
     public class BackgroundCharacter : MonoBehaviour
     {
@@ -38,6 +40,8 @@ namespace Animator
 
         [Header("Spawn")]
         public Transform doorSpawnPoint;
+
+        [SerializeField] private UnityEngine.Playables.PlayableDirector timeline;
         
         //propriètes pour stocker les component 
         private HUDFade _tutoFade;
@@ -81,9 +85,18 @@ namespace Animator
                 }
 
             // Sinon intro normale
+            //On lance la timeline d'intro qui déclanche le script par signal
+            StartCoroutine(LaunchTimeline());
+            StartCoroutine(Manager.TransitionManager.Instance.PlayFade(false, 3f));
+            _state = State.Waiting;
             transform.position = new Vector2(startX, transform.position.y);
             if (playerController != null)
                 playerController.enabled = false;
+        }
+
+        public void StartIntro()
+        {
+            _state = State.RunningIn;
         }
 
         void Update()
@@ -126,6 +139,7 @@ namespace Animator
                     //On vérifie qu'il est bien arrivée au point B
                     if (transform.position.x >= exitX)
                     {
+                        MusicManager.Instance.PlayAmbient("AmbientMenu");
                         //On redonne les controls au joueur
                         if (playerController is not null)
                             playerController.enabled = true;
@@ -152,6 +166,12 @@ namespace Animator
         public void TriggerExitAnimation()
         {
             _state = State.RunningOut;
+        }
+
+        IEnumerator LaunchTimeline()
+        {
+            yield return null;
+            timeline.Play();
         }
     }
 }

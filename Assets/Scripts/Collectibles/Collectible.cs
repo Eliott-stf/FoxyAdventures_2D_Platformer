@@ -2,6 +2,7 @@ namespace Collectibles
 {
     using UnityEngine;
     using Utils;
+    using Manager.Audio;
 
     public abstract class Collectible : MonoBehaviour
     {
@@ -27,6 +28,8 @@ namespace Collectibles
             {
                 // sauvegarde dans le state 
                 PlayerState.collectedItems.Add(GameUtils.GetId(gameObject));
+                // Lance le son de collecte
+                SoundManager.Instance.PlaySound3D("Collect", transform.position);
                 //lance la fonction onCollect et detruit l'objet
                 OnCollected(other.gameObject);
                 Destroy(gameObject);
